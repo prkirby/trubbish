@@ -29,8 +29,26 @@ Servo secondaryServo = Servo(pwm, 1, 800, 3500);
 Servo thirdServo = Servo(pwm, 2, 800, 3500);
 
 //Animation init
-Animation<3> mainAnimation;
-Animation<4> secondaryAnimation;
+Action mainAnimationActions[4] = {
+    Action(1000, 0, 90, mainServo),
+    Action(900, 90, 0, mainServo),
+    Action(2000, 0, 180, mainServo),
+    Action(900, 180, 0, mainServo)
+};
+
+Action secondaryAnimationActions[4] = {
+    Action(1000, 0, 20, secondaryServo),
+    Action(2000, 20, 180, secondaryServo),
+    Action(1600, 80, 90, secondaryServo),
+    Action(1200, 90, 0, secondaryServo)
+};
+
+
+Animation<4> mainAnimation = Animation<4>( mainAnimationActions );
+Animation<4> secondaryAnimation = Animation<4>( secondaryAnimationActions );
+
+
+
 
 void setup() {
     Serial.begin(9600);
@@ -41,24 +59,6 @@ void setup() {
 
     pinMode(trigPin, OUTPUT); // Set up sonar pins
     pinMode(echoPin, INPUT);
-
-    // Animations
-    Action mainAnimationActions[3] = {
-        Action(2000, 0, 90, mainServo),
-        Action(3000, 90, 0, mainServo),
-        Action(4000, 0, 180, mainServo)
-    };
-
-    mainAnimation = Animation<3>( mainAnimationActions );
-
-    Action secondaryAnimationActions[4] = {
-        Action(1000, 0, 20, secondaryServo),
-        Action(800, 20, 80, secondaryServo),
-        Action(600, 80, 180, secondaryServo),
-        Action(200, 180, 0, secondaryServo)
-    };
-
-    secondaryAnimation = Animation<4>( secondaryAnimationActions );
 
     yield();
 }
@@ -73,27 +73,25 @@ unsigned int getDistance() {
     digitalWrite(trigPin, LOW);
     unsigned int duration = pulseIn(echoPin, HIGH);
     unsigned int distance = duration / 2 / 29.1;
-    delay(1);
     return distance;
 }
 
 void loop() {
-    // // Get distance
-    // unsigned int distance = getDistance();
-    // // If its too big break
-    // if (distance > maxDistance ) return;
-    // // If its the same as last time, break
-    // if (prevDistance == distance) return;
-    //
-    // prevDistance = distance;
-    //
-    // // Smooth that bitch out
-    // distance = distanceSmoother.smooth(distance);
-    //
-    // mainServo.move(map(distance, 3, maxDistance, 0, 100));
-    // secondaryServo.move(map(distance, 3, maxDistance, 100, 0));
-    // thirdServo.move(map(distance, 3, maxDistance, 30, 80));
+    // Get distance
+    unsigned int distance = getDistance();
+    // If its too big break
+    if (distance > maxDistance ) return;
+    // If its the same as last time, break
+    if (prevDistance == distance) return;
 
-    mainAnimation.check();
-    secondaryAnimation.check();
+    prevDistance = distance;
+
+    // Smooth that bitch out
+    distance = distanceSmoother.smooth(distance);
+
+    if (distance < 40) {
+        mainAnimation.check();
+        secondaryAnimation.check();
+    }
+
 }
