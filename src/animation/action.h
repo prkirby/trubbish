@@ -8,6 +8,7 @@ class Action {
 private:
     unsigned int duration, interval, startDeg, finishDeg, curDeg;
     bool isForward;
+    bool isPause = false;
     Servo servo;
     void init() {
         int difference = finishDeg - startDeg;
@@ -22,6 +23,12 @@ private:
 
 public:
     Action() {}
+
+    Action(int duration) {
+        this->isPause = true;
+        this->interval = duration;
+    }
+
     Action(int duration, int startDeg, int finishDeg, Servo &servo) {
         this->duration = duration;
         this->startDeg = startDeg;
@@ -35,24 +42,48 @@ public:
         return this->interval;
     }
 
+    void reverse() {
+        unsigned int tmp;
+        tmp = startDeg;
+        startDeg = finishDeg;
+        finishDeg = tmp;
+        curDeg = startDeg;
+        isForward = !isForward;
+    }
+
+    void edit(unsigned int duration, unsigned int startDeg, unsigned int finishDeg) {
+        this->duration = duration;
+        this->startDeg = startDeg;
+        this->finishDeg = finishDeg;
+        this->init();
+    }
+
     /**
      * Moves servo to the next degree
      * @return true if action is finished, otherwise returns false
      */
     bool fire() {
-        if (isForward) {
-            curDeg++;
-            this->servo.servoSet(curDeg);
-        } else {
-            curDeg--;
-            this->servo.servoSet(curDeg);
-        }
-        if ( (isForward && curDeg >= finishDeg ) || (!isForward && curDeg <= finishDeg ) ) {
-            curDeg = startDeg;
+        // If is pause, return true, since the interval equal to duration
+        if (isPause) {
             return true;
-        } else {
-            return false;
+        } else { // Otherwise, move the servo in the proper direction, and check if action is finished
+
+            if (isForward) {
+                curDeg++;
+                this->servo.servoSet(curDeg);
+            } else {
+                curDeg--;
+                this->servo.servoSet(curDeg);
+            }
+            if ( (isForward && curDeg >= finishDeg ) || (!isForward && curDeg <= finishDeg ) ) {
+                curDeg = startDeg;
+                return true;
+            } else {
+                return false;
+            }
         }
+
+
     }
 };
 
