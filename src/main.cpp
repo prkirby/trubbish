@@ -126,6 +126,12 @@ Action faceRotateActions[4] = {
     Action(500)
 };
 
+// Base Rotate Animations
+Action baseRotateActions[2] = {
+    Action(4000, 60, 130, baseRotateServo),
+    Action(4000, 130, 60, baseRotateServo),
+};
+
 /**
 * Animation Initialization (actions, loop?, reverse?)
 */
@@ -146,7 +152,8 @@ Animation<1> pedal5Close = Animation<1>( pedal5CloseActions );
 Animation<1> pedal6Close = Animation<1>( pedal6CloseActions );
 // Flower Wiggle Animation
 Animation<6> flowerWiggle = Animation<6>( flowerWiggleActions, false, true );
-
+// Base Rotate Animation
+Animation<2> baseRotate = Animation<2>( baseRotateActions, false, true);
 
 /**
 * Stepper set up
@@ -198,33 +205,6 @@ void setup() {
     // distanceSmoother.initialize(200);
 
     yield();
-
-}
-
-
-void changeAnimations() {
-    // int startDeg, finishDeg, duration;
-    // bool firstEdit = true;
-    // for ( int i = 0; i < mainAnimation.getNumActions(); i ++ ) {
-    //     duration = random(1000, 5000);
-    //     startDeg = random(0, 181);
-    //     if (firstEdit) {
-    //         startDeg = random(0, 181);
-    //         finishDeg = random(0, 181);
-    //         firstEdit = false;
-    //     } else {
-    //         startDeg = finishDeg;
-    //         finishDeg = random(0, 181);
-    //     }
-    //
-    //     mainAnimation.getAction(i).edit(duration, startDeg, finishDeg);
-    //     Serial.print("Duration: ");
-    //     Serial.print(duration);
-    //     Serial.print(" | start: ");
-    //     Serial.print(startDeg);
-    //     Serial.print(" | finish: ");
-    //     Serial.println(finishDeg);
-    // }
 
 }
 
@@ -372,10 +352,26 @@ void loop() {
         // while(!liftFlower.check()) {}
         // liftFlower.reset();
         // Serial.println("done lifting");
-        // delay(4000);
+        // while (!flowerOpen()) {}
+        //  isFlowerOpen = true;
+        //  Serial.println("Opened Flower");
+        //  resetFlower();
+        //  while(!flowerAnimations());
+        //  resetFlowerAnimations();
+        //  while(!flowerAnimations());
+        //  resetFlowerAnimations();
+        //  while (!flowerClose()) {}
+        //  isFlowerOpen = false;
+        //  Serial.println("Closed Flower");
+        //  resetFlower();
+        // while(!baseRotate.run()) {}
+        // baseRotate.reset();
         // while(!lowerFlower.check()) {}
         // lowerFlower.reset();
         // Serial.println("done lowering");
+        // unsigned long min = 1000 * 60 * 1;
+        // unsigned long max = 1000 * 60 * 5;
+        // delay(random(min , max));
 
         // /**
         //  * Face Animations Test
@@ -408,12 +404,25 @@ void loop() {
          */
         // while(!flowerOpen()){}
         // while(true) {
-            int degree = map(analogRead(potPin), 0, 667, 0, 180);
-            baseRotateServo.servoSet(degree);
-            Serial.println(degree);
-            delay(20);
+            // int degree = map(analogRead(potPin), 0, 667, 0, 180);
+            // baseRotateServo.servoSet(degree);
+            // Serial.println(degree);
+            // delay(20);
         // }
+        // Action baseRotateActions[2] = {
+        //     Action(4000, 60, 130, baseRotateServo),
+        //     Action(4000, 130, 60, baseRotateServo),
+        // };
 
+        while(!faceRotateAnimation.run()) {}
+        faceRotateAnimation.reset();
+        Serial.println("Ran First");
+        while(!faceRotateAnimation.run()) {}
+        faceRotateAnimation.reset();
+        Serial.println("Ran Second");
+        faceRotateAnimation.randomize(200, 1200, 0, 75, 35);
+        delay(3000);
+        Serial.println("starting next");
 
     }
 }

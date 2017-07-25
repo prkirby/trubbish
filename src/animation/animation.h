@@ -3,6 +3,8 @@
 
 #include "action.h"
 
+//TODO: Double check reset, as it doesn't seem to be doing its job.
+
 template <int NUM_ACTIONS >
 class Animation {
 
@@ -74,6 +76,47 @@ class Animation {
             this->reversed = !this->reversed;
         }
 
+        /**
+         * Randomize the actions for the animation
+         */
+        void randomize(unsigned int minDur, unsigned int maxDur, unsigned int minDeg, unsigned int maxDeg, unsigned int endDeg = 0) {
+            int startDeg, finishDeg, duration;
+            bool firstEdit = true;
+            for ( int i = 0; i < this->getNumActions(); i ++ ) {
+
+                duration = random(minDur, maxDur);
+
+                if (firstEdit) {
+                    startDeg = random(minDeg, maxDeg);
+                    firstEdit = false;
+                } else {
+                    startDeg = finishDeg;
+                }
+
+                if (i == this->getNumActions() - 1 && endDeg) {
+                    if (startDeg == endDeg) {
+                        endDeg++; // Double check they arent the same, or else we will get stuck in a loop.
+                    }
+                    finishDeg = endDeg;
+
+                } else {
+                    finishDeg = random(minDeg, maxDeg);
+                    if (finishDeg == startDeg) { // Same check here
+                        finishDeg++;
+                    }
+                }
+
+                this->getAction(i).edit(duration, startDeg, finishDeg);
+                Serial.print("Duration: ");
+                Serial.print(duration);
+                Serial.print(" | start: ");
+                Serial.print(startDeg);
+                Serial.print(" | finish: ");
+                Serial.println(finishDeg);
+                Serial.println(this->reverseWhenDone);
+            }
+        }
+
         bool run() {
             // If this animation is looping or hasn't run yet
             if ( loop || !hasRun ) {
@@ -100,5 +143,7 @@ class Animation {
 
             return false;
         }
+
+
 };
 #endif
