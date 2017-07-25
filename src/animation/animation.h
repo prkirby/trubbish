@@ -60,6 +60,10 @@ class Animation {
             return actions[index];
         }
 
+        void setLoop( bool isLooping ) {
+            this->loop = isLooping;
+        }
+
         void reverse() {
             Action tmp;
 

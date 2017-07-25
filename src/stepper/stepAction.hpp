@@ -9,7 +9,7 @@ private:
     int degrees, curStep = 0, steps;
     unsigned long prevMicros, interval, duration, curMicros;
     char direction;
-    bool toStart, toFinish, setHigh = false, isFinished = false, dirSet = false;
+    bool toStart, toFinish, setHigh = false, hasRun = false, dirSet = false;
     Stepper stepper;
     void init(unsigned long steps, unsigned long duration, char direction) {
         this->duration = duration * 1000;
@@ -45,10 +45,7 @@ public:
     // Returns true if animation finished
     bool check() {
 
-        if ( curStep >= steps ) {
-            Serial.println(stepper.checkStart());
-            Serial.println("derp");
-            delay(500);
+        if ( curStep >= steps || hasRun ) {
             return true;
         }
         if (!dirSet) {
@@ -61,6 +58,7 @@ public:
         if ( curMicros - prevMicros > interval ) {
 
             if ( ( toStart && stepper.checkStart() ) || ( toFinish && stepper.checkFinish() ) ) {
+                hasRun = true;
                 return true;
             }
 
@@ -85,6 +83,7 @@ public:
     void reset() {
         curStep = 0;
         dirSet = false;
+        hasRun = false;
     }
 
 
