@@ -174,6 +174,7 @@ StepAction lowerFlower('f', 'f', 3500, flowerStepper);
 */
 int potPin = 0;
 int flowerSwitchPin = 7;
+int killSwitch = 13;
 bool isFlowerOpen = false;
 bool calibration = true;
 
@@ -191,6 +192,7 @@ void setup() {
 
     // Calibration tools
     pinMode(flowerSwitchPin, INPUT);
+    pinMode(killSwitch, INPUT);
 
     // Initialize millis counter
     prevMillis = millis();
@@ -409,20 +411,17 @@ void loop() {
             // Serial.println(degree);
             // delay(20);
         // }
-        // Action baseRotateActions[2] = {
-        //     Action(4000, 60, 130, baseRotateServo),
-        //     Action(4000, 130, 60, baseRotateServo),
-        // };
 
-        while(!faceRotateAnimation.run()) {}
-        faceRotateAnimation.reset();
-        Serial.println("Ran First");
-        while(!faceRotateAnimation.run()) {}
-        faceRotateAnimation.reset();
-        Serial.println("Ran Second");
-        faceRotateAnimation.randomize(200, 1200, 0, 75, 35);
-        delay(3000);
-        Serial.println("starting next");
+
+        // while(!faceRotateAnimation.run()) {}
+        // faceRotateAnimation.reset();
+        // Serial.println("Ran First");
+        // while(!faceRotateAnimation.run()) {}
+        // faceRotateAnimation.reset();
+        // Serial.println("Ran Second");
+        // faceRotateAnimation.randomize(200, 1200, 0, 75, 35);
+        // delay(3000);
+        // Serial.println("starting next");
 
     }
 }
