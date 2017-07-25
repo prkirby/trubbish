@@ -43,4 +43,10 @@ public:
         average = total / bufferSize;
         return average;
     }
+
+    void initialize(T value) {
+        for (int i = 0; i < ARRAY_LEN; i++) {
+            readings[i] = value;
+        }
+    }
 };

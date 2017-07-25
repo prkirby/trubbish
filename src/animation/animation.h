@@ -27,11 +27,11 @@ class Animation {
     public:
         Animation() {
             Action actions[0];
-            init(actions, true, false);
+            init(actions, false, false);
         }
 
         Animation(Action actions[]) {
-            init(actions, true, false);
+            init(actions, false, false);
         }
 
         Animation(Action actions[], bool loop) {
@@ -74,7 +74,7 @@ class Animation {
             this->reversed = !this->reversed;
         }
 
-        void check() {
+        bool run() {
             // If this animation is looping or hasn't run yet
             if ( loop || !hasRun ) {
                 if ( millis() - prevMillis >= actions[curIndex].getInterval() ) {
@@ -92,7 +92,13 @@ class Animation {
                         }
                     }
                 }
+            } else {
+
+                return true;
+
             }
+
+            return false;
         }
 };
 #endif
