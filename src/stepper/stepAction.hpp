@@ -25,6 +25,16 @@ public:
         init(steps, duration, direction);
     }
 
+    StepAction(unsigned long steps, unsigned long duration, char direction, char endSwitch, Stepper &stepper) {
+        this->stepper = stepper;
+        if (endSwitch == 'f') {
+            this->toFinish = true;
+        } else if (endSwitch =='s') {
+            this->toStart = true;
+        }
+        init(steps, duration, direction);
+    }
+
     StepAction(char direction, char endSwitch, unsigned long interval, Stepper &stepper) {
         this->stepper = stepper;
         this->direction = direction;
@@ -68,7 +78,7 @@ public:
             } else {
                 stepper.setLow();
                 setHigh = false;
-                if (!toStart && !toFinish) {
+                if ( steps > 1 || ( !toStart && !toFinish ) ) {
                     curStep++;
                 }
             }

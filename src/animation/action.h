@@ -48,13 +48,14 @@ public:
         startDeg = finishDeg;
         finishDeg = tmp;
         curDeg = startDeg;
-        isForward = !isForward;
+        this->init();
     }
 
-    void edit(unsigned int duration, unsigned int startDeg, unsigned int finishDeg) {
+    void edit(unsigned int duration, unsigned int startDeg, unsigned int finishDeg, bool isPause) {
         this->duration = duration;
         this->startDeg = startDeg;
         this->finishDeg = finishDeg;
+        this->isPause = isPause;
         this->init();
     }
 
@@ -63,7 +64,7 @@ public:
      * @return true if action is finished, otherwise returns false
      */
     bool fire() {
-        // If is pause, return true, since the interval equal to duration
+        // If is pause, return true, since the interval is equal to duration
         if (isPause) {
             return true;
         } else { // Otherwise, move the servo in the proper direction, and check if action is finished
